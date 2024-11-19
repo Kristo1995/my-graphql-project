@@ -1,0 +1,10 @@
+services:
+  app:
+    image: my-project-img
+    ports:
+      - "8080:8080"
+    env_file:
+      ".env"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/userdb
+      - SPRING_DATA_REDIS_HOST=host.docker.internal
