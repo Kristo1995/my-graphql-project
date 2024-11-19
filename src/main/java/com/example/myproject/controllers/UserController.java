@@ -4,13 +4,15 @@ import com.example.myproject.entities.User;
 import com.example.myproject.entities.UserRequest;
 import com.example.myproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/users")
+@Controller
 public class UserController {
 
     private final UserService userService;
@@ -20,25 +22,26 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("")
+    @QueryMapping
     public List<User> getUsers() {
        return userService.getUsers();
     }
 
-    @GetMapping("{id}")
-    public Optional<User> getUser(@PathVariable Long id) {
+    @QueryMapping
+    public Optional<User> getUser(@Argument Long id) {
         return userService.getUser(id);
     }
 
-    @PostMapping("")
-    public User addUser(@RequestBody UserRequest userRequest) {
+    @MutationMapping
+    public User addUser(@Argument UserRequest userRequest) {
         User user = new User();
         user.setName(userRequest.getName());
         return userService.addUser(user);
     }
 
-    @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable Long id) {
+    @MutationMapping
+    public String deleteUser(@Argument Long id) {
         userService.deleteUser(id);
+        return "User with id " + id + " has been deleted";
     }
 }
