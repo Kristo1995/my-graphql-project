@@ -34,11 +34,11 @@ public class UserService {
     }
 
     @Cacheable(value = "singleUserCache", key = "#id")
-    public Optional<User> getUser(@PathVariable Long id) {
+    public User getUser(@PathVariable Long id) {
         log.info("Fetching user with id {} from database", id);
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            return user;
+            return user.get();
         } else {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
         }

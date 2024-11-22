@@ -11,11 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @GraphQlTest
 public class UserControllerIT {
@@ -67,7 +67,7 @@ public class UserControllerIT {
         User user1 = new User();
         user1.setId(1L);
         user1.setName("foo");
-        when(userService.getUser(1L)).thenReturn(Optional.of(user1));
+        when(userService.getUser(1L)).thenReturn(user1);
 
         graphQlTester.document(query)
                 .execute()

@@ -50,20 +50,13 @@ class UserServiceTest {
         user1.setName("foo");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
 
-        Optional<User> optionalResult = userService.getUser(1L);
+        User result = userService.getUser(1L);
 
-        User result = null;
-        if (optionalResult.isPresent()) {
-            result = optionalResult.get();
-        }
         assertEquals(user1, result);
     }
 
     @Test
     void getUserNotFound() {
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setName("foo");
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(HttpClientErrorException.class, () -> userService.getUser(1L));

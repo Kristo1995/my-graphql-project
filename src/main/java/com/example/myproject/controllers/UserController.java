@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @QueryMapping
-    public Optional<User> getUser(@Argument Long id) {
+    public User getUser(@Argument Long id) {
         return userService.getUser(id);
     }
 
