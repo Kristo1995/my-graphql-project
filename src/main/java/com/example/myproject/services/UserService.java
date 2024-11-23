@@ -27,13 +27,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    @Cacheable(value = "allUsersCache", key = "0")
+    @Cacheable(value = "usersCache", key = "0")
     public List<User> getUsers() {
         log.info("Fetching users from database");
         return userRepository.findAll();
     }
 
-    @Cacheable(value = "singleUserCache", key = "#id")
+    @Cacheable(value = "userCache", key = "#id")
     public User getUser(@PathVariable Long id) {
         log.info("Fetching user with id {} from database", id);
         Optional<User> user = userRepository.findById(id);
@@ -44,15 +44,16 @@ public class UserService {
         }
     }
 
-    @CacheEvict(value = "allUsersCache", key = "0")
+    @CacheEvict(value = "usersCache", key = "0")
     public User addUser(@RequestBody User user) {
         log.info("Adding {} to database", user.getName());
         return userRepository.save(user);
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "allUsersCache", key = "0"),
-            @CacheEvict(value = "singleUserCache", key = "#id")
+            @CacheEvict(value = "usersCache", key = "0"),
+            @CacheEvict(value = "userCache", key = "#id"),
+            @CacheEvict(value = "contractCache", key = "#id")
     })
     public void deleteUser(@PathVariable Long id) {
         log.info("Deleting user with id {} from database", id);

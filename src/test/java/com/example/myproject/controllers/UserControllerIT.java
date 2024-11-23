@@ -1,6 +1,7 @@
 package com.example.myproject.controllers;
 
 import com.example.myproject.entities.User;
+import com.example.myproject.services.ContractService;
 import com.example.myproject.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@GraphQlTest
+@GraphQlTest(UserController.class)
 public class UserControllerIT {
 
     @Autowired
@@ -26,17 +27,11 @@ public class UserControllerIT {
     @MockBean
     private UserService userService;
 
-    @Test
-    public void getUsers() {
-        String query = """
-            query {
-                getUsers {
-                    id
-                    name
-                }
-            }
-        """;
+    @MockBean
+    private ContractService contractService;
 
+    @Test
+    public void users() {
         User user1 = new User();
         user1.setId(1L);
         user1.setName("foo");
@@ -44,51 +39,44 @@ public class UserControllerIT {
         user2.setId(2L);
         user2.setName("bar");
         when(userService.getUsers()).thenReturn(List.of(user1, user2));
+        when(contractService.getContractId(1L)).thenReturn("1ABC");
+        when(contractService.getContractId(2L)).thenReturn("2ABC");
 
-        graphQlTester.document(query)
+        graphQlTester
+                .documentName("users")
                 .execute()
-                .path("getUsers[0].id").entity(Long.class).isEqualTo(1L)
-                .path("getUsers[0].name").entity(String.class).isEqualTo("foo")
-                .path("getUsers[1].id").entity(Long.class).isEqualTo(2L)
-                .path("getUsers[1].name").entity(String.class).isEqualTo("bar");
+                .path("users[0].id").entity(Long.class).isEqualTo(1L)
+                .path("users[0].name").entity(String.class).isEqualTo("foo")
+                .path("users[0].contractId").entity(String.class).isEqualTo("1ABC")
+                .path("users[1].id").entity(Long.class).isEqualTo(2L)
+                .path("users[1].name").entity(String.class).isEqualTo("bar")
+                .path("users[1].contractId").entity(String.class).isEqualTo("2ABC");
     }
 
     @Test
-    public void getUser() {
-        String query = """
-            query {
-                getUser(id: 1) {
-                    id
-                    name
-                }
-            }
-        """;
-
+    public void user() {
         User user1 = new User();
         user1.setId(1L);
         user1.setName("foo");
         when(userService.getUser(1L)).thenReturn(user1);
+        when(contractService.getContractId(1L)).thenReturn("1ABC");
 
-        graphQlTester.document(query)
+        graphQlTester
+                .documentName("user")
+                .variable("id", 1L)
                 .execute()
-                .path("getUser.id").entity(Long.class).isEqualTo(1L)
-                .path("getUser.name").entity(String.class).isEqualTo("foo");
+                .path("user.id").entity(Long.class).isEqualTo(1L)
+                .path("user.name").entity(String.class).isEqualTo("foo")
+                .path("user.contractId").entity(String.class).isEqualTo("1ABC");
     }
 
     @Test
-    public void getUserNotFound() {
-        String query = """
-            query {
-                getUser(id: 1) {
-                    id
-                    name
-                }
-            }
-        """;
-
+    public void userNotFound() {
         when(userService.getUser(1L)).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"));
 
-        graphQlTester.document(query)
+        graphQlTester
+                .documentName("user")
+                .variable("id", 1L)
                 .execute()
                 .errors()
                 .satisfy(errors -> {
@@ -100,21 +88,14 @@ public class UserControllerIT {
 
     @Test
     public void addUser() {
-        String mutation = """
-            mutation($name: String!) {
-                addUser(userRequest: { name: $name}) {
-                    id
-                    name
-                }
-            }
-        """;
-
         User user1 = new User();
         user1.setId(1L);
         user1.setName("foo");
         when(userService.addUser(any(User.class))).thenReturn(user1);
 
-        graphQlTester.document(mutation).variable("name", "foo")
+        graphQlTester
+                .documentName("addUser")
+                .variable("name", "foo")
                 .execute()
                 .path("addUser.id").entity(Long.class).isEqualTo(1L)
                 .path("addUser.name").entity(String.class).isEqualTo("foo");
@@ -122,13 +103,9 @@ public class UserControllerIT {
 
     @Test
     public void deleteUser() {
-        String mutation = """
-            mutation {
-                deleteUser(id: 1)
-            }
-        """;
-
-        graphQlTester.document(mutation)
+        graphQlTester
+                .documentName("deleteUser")
+                .variable("id", 1L)
                 .execute()
                 .path("deleteUser").entity(String.class).isEqualTo("User with id 1 has been deleted");
 

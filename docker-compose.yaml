@@ -1,6 +1,6 @@
 services:
   app:
-    image: my-project-img
+    image: my-graphql-project-img
     ports:
       - "8080:8080"
     env_file:

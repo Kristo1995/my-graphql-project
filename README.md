@@ -1,1 +1,1 @@
-# my-project
+# my-graphql-project

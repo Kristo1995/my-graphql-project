@@ -11,9 +11,9 @@
 	</parent>
 
 	<groupId>com.example</groupId>
-	<artifactId>my-project</artifactId>
+	<artifactId>my-graphql-project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>my-project</name>
+	<name>my-graphql-project</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

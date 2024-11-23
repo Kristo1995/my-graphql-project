@@ -1,0 +1,3 @@
+mutation ($id: ID!) {
+    deleteUser(id: $id)
+}

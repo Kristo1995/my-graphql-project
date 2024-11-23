@@ -1,4 +1,4 @@
-SERVICE_NAME=my-project
+SERVICE_NAME=my-graphql-project
 IMAGE_NAME=${SERVICE_NAME}-img
 
 build:
