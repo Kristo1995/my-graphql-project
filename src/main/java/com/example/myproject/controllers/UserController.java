@@ -48,7 +48,7 @@ public class UserController {
         return "User with id " + id + " has been deleted";
     }
 
-    @SchemaMapping(typeName = "User")
+    @SchemaMapping
     public String contractId(User user) {
         return contractService.getContractId(user.getId());
     }
