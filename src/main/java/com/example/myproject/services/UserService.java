@@ -7,6 +7,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +19,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private static final String USER_NOT_FOUND = "USER_NOT_FOUND";
 
@@ -46,7 +48,7 @@ public class UserService {
 
     @CacheEvict(value = "usersCache", key = "0")
     public User addUser(@RequestBody User user) {
-        log.info("Adding {} to database", user.getName());
+        log.info("Adding {} to database", user.getUsername());
         return userRepository.save(user);
     }
 
@@ -58,5 +60,10 @@ public class UserService {
     public void deleteUser(@PathVariable Long id) {
         log.info("Deleting user with id {} from database", id);
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

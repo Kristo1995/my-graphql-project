@@ -1,7 +1,7 @@
 query {
     users {
         id
-        name
+        username
         contractId
     }
 }

@@ -31,10 +31,10 @@ class UserServiceTest {
     void getUsers() {
         User user1 = new User();
         user1.setId(1L);
-        user1.setName("foo");
+        user1.setUsername("foo");
         User user2 = new User();
         user2.setId(2L);
-        user2.setName("bar");
+        user2.setUsername("bar");
         List<User> users = List.of(user1, user2);
         when(userRepository.findAll()).thenReturn(users);
 
@@ -47,7 +47,7 @@ class UserServiceTest {
     void getUser() {
         User user1 = new User();
         user1.setId(1L);
-        user1.setName("foo");
+        user1.setUsername("foo");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
 
         User result = userService.getUser(1L);
@@ -66,7 +66,7 @@ class UserServiceTest {
     void addUser() {
         User user1 = new User();
         user1.setId(1L);
-        user1.setName("foo");
+        user1.setUsername("foo");
         when(userRepository.save(any(User.class))).thenReturn(user1);
 
         User result = userService.addUser(user1);

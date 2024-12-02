@@ -4,13 +4,13 @@ extend type Query {
 }
 
 extend type Mutation {
-    addUser(userRequest: UserRequest!): User
+    addUser(username: String!, password: String!): User
     deleteUser(id: ID!): String
 }
 
 type User {
     id: ID!
-    name: String!
+    username: String!
     contractId: String!
 }
 

@@ -1,6 +1,6 @@
-mutation($name: String!) {
-    addUser(userRequest: { name: $name}) {
+mutation($username: String!, $password: String!) {
+    addUser(username: $username, password: $password) {
         id
-        name
+        username
     }
 }
